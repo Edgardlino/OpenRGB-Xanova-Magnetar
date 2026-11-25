@@ -1,0 +1,39 @@
+name: Build XanovaMagnetarPlugin (Windows MSVC x64)
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build-plugin-win64:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Qt 5.15.2 (MSVC 2019 64-bit)
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '5.15.2'
+          arch: 'win64_msvc2019_64'
+
+      - name: Setup MSVC x64
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+
+      - name: Build XanovaMagnetarPlugin.dll
+        shell: cmd
+        run: |
+          mkdir plugin\build
+          cd plugin\build
+          qmake ..\XanovaMagnetarPlugin.pro CONFIG+=release
+          nmake
+
+      - name: Upload XanovaMagnetarPlugin.dll artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: XanovaMagnetarPlugin-win64
+          path: plugin/build/release/XanovaMagnetarPlugin.dll
