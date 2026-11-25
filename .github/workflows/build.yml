@@ -36,4 +36,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: XanovaMagnetarPlugin-win64
-          path: plugin/build/release/XanovaMagnetarPlugin.dll
+          path: plugin/build/**/XanovaMagnetarPlugin.dll
+          if-no-files-found: error
